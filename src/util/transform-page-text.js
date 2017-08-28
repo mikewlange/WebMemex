@@ -4,6 +4,7 @@ import urlRegex from 'url-regex'
 const allWhitespacesPattern = /\s+/g
 const nonWordsPattern = /[_\W]+/g // NOTE: This kills accented characters; maybe make better
 const singleDigitNumbersPattern = /\b\d\b/g
+const smallWordsPattern = /(\b(\w{1,3})\b(\s|$))/g
 const urlPattern = urlRegex()
 
 const removeUrls = (text = '') =>
@@ -18,6 +19,10 @@ const removeSingleDigitNumbers = (text = '') =>
 
 const cleanupWhitespaces = (text = '') =>
     text.replace(allWhitespacesPattern, ' ').trim()
+
+// Removes any words with <= 3 chars
+const removeSmallWords = (text = '') =>
+    text.replace(smallWordsPattern, '')
 
 /**
  * Takes in some text content and strips it of unneeded data. Currently does
@@ -40,6 +45,8 @@ export default function transform({ text = '' }) {
 
     // Remove URLs first before we start messing with things
     searchableText = removeUrls(searchableText)
+
+    searchableText = removeSmallWords(searchableText)
 
     // We don't care about searching on punctuation, so remove that
     searchableText = removePunctuation(searchableText)
