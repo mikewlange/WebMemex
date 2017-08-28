@@ -24,6 +24,12 @@ const cleanupWhitespaces = (text = '') =>
 const removeSmallWords = (text = '') =>
     text.replace(smallWordsPattern, '')
 
+// Split strings on non-words, filtering out duplicates, before rejoining them with single space
+const removeDuplicateWords = (text = '') =>
+    text.split(/\W+/)
+        .filter((word, i, allWords) => i === allWords.indexOf(word))
+        .join(' ')
+
 /**
  * Takes in some text content and strips it of unneeded data. Currently does
  * puncation (although includes accented characters), numbers, and whitespace.
@@ -47,6 +53,8 @@ export default function transform({ text = '' }) {
     searchableText = removeUrls(searchableText)
 
     searchableText = removeSmallWords(searchableText)
+
+    searchableText = removeDuplicateWords(searchableText)
 
     // We don't care about searching on punctuation, so remove that
     searchableText = removePunctuation(searchableText)
