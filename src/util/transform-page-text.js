@@ -3,7 +3,7 @@ import urlRegex from 'url-regex'
 
 const allWhitespacesPattern = /\s+/g
 const nonWordsPattern = /[_\W]+/g // NOTE: This kills accented characters; maybe make better
-const numbersPattern = /[0-9]+/g
+const singleDigitNumbersPattern = /\b\d\b/g
 const urlPattern = urlRegex()
 
 const removeUrls = (text = '') =>
@@ -12,8 +12,9 @@ const removeUrls = (text = '') =>
 const removePunctuation = (text = '') =>
     text.replace(nonWordsPattern, ' ')
 
-const removeNumbers = (text = '') =>
-    text.replace(numbersPattern, ' ')
+// Removes any single digit numbers that appear on their own
+const removeSingleDigitNumbers = (text = '') =>
+    text.replace(singleDigitNumbersPattern, ' ')
 
 const cleanupWhitespaces = (text = '') =>
     text.replace(allWhitespacesPattern, ' ').trim()
@@ -43,8 +44,8 @@ export default function transform({ text = '' }) {
     // We don't care about searching on punctuation, so remove that
     searchableText = removePunctuation(searchableText)
 
-    // We don't care about numbers
-    searchableText = removeNumbers(searchableText)
+    // We don't care single digit numbers
+    searchableText = removeSingleDigitNumbers(searchableText)
 
     // We don't care about non-single-space whitespace (' ' is cool)
     searchableText = cleanupWhitespaces(searchableText)
